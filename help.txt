@@ -1,0 +1,58 @@
+ Help doc for Laba1
+
+				Arguments for main.sh
+
+	1 
+		calc [sum|sub|mul|div] num1 num2
+
+		sum num1 num2 - finds sum of the two given numbers
+		sub num1 num2 - finds the difference of the two given numbers
+		mul num1 num2 - finds the product of multiplying of two
+				 given numbers 
+		div num1 num2 - finds the quotient of num1 divided by num2
+		
+		all operators support negative numbers
+
+	2
+		search direcory_name pattern
+
+		Recursively outputs files according to the given pattern
+		from the given directory_name
+
+	3
+		reverse file_name1 file_name2
+
+		puts the contents of the first file to the second file
+		in the reversed order
+		all possible outcomes will be prompted:
+			1) Writing to the non-empty file. Two options
+			provided: overwrite, write to the end.
+			2) Reading from the empty file. No changes to the
+			second file will be made.
+			3) Reading from and writing to the same file.
+			Contents of file_name1 will be reversed.  
+			4) If file_name2 does not exist, its creation
+			will be prompted.
+
+	4
+		strlen [string|"string with spaces"|string\ with\ spaces]
+		
+		finds the length of the given string.
+		single string is expected.
+		when passing a number, aborting will be prompted.
+
+	5
+		log
+
+		outputs edited contents from /var/log/anaconda/X.log
+
+	6
+		help
+		
+		prints the help file contents to the terminal
+
+	7
+		exit [no arguments|code]
+		
+		exits the program with the given code or 0 if not specified
+
