@@ -9,15 +9,20 @@ function error_exit {
 }
 
 function calc {
-	if [[ $1 == "sum" ]]; then
-		echo "$(($2+$3))"
-	elif [[ $1 == "sub" ]]; then
-		echo "$(($2-$3))"
-	elif [[ $1 == "mul" ]]; then
-		echo "$(($2*$3))"
-	elif [[ $1 == "div" ]]; then
-		echo "$(($2/$3))"
-	fi
+	case "$1" in
+		"sum")
+			echo "$(($2+$3))"
+			;;
+		"sub")
+			echo "$(($2-$3))"
+			;;
+		"mul")
+			echo "$(($2*$3))"
+			;;
+		"div")
+			echo "$(($2/$3))"
+			;;
+	esac
 }
 
 re='^[-+]?(0|[1-9]|[1-9][0-9]+)$'
@@ -31,7 +36,7 @@ elif [[ $1 =~ $re ]]; then
 elif [ $1 != "sum" ] && [ $1 != "sub" ] && [ $1 != "mul" ] && [ $1 != "div" ]; then
 	error_exit "This operator is not supported($1). Check the spelling"
 elif [[ $2 =~ $re ]] && [[ $3 =~ $re ]]; then
-	if [[ "$3" == "0" ]]; then
+	if [ "$1" == "div" ] && (( $3 == 0 )); then
 		error_exit "Division by zero"
 	else
 		calc $1 $2 $3

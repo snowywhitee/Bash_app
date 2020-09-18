@@ -20,7 +20,7 @@ touch tmp tmp2
 
 cat /var/log/anaconda/X.log >> tmp
 
-sed -i 's/WW/Warning/g;s/II/Information/g' tmp
+sed -i 's/]\ (WW/]\ (Warning/g;s/]\ (II/]\ (Information/g' tmp
 cat tmp >> tmp2
 sed -i '/Information/!d' tmp
 sed -i '/Warning/!d' tmp2

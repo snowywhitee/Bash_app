@@ -1,7 +1,5 @@
 #!/bin/bash
 
-#dirname patern
-
 SCRIPTNAME=$0
 
 function error_exit {
@@ -11,7 +9,7 @@ function error_exit {
 
 function search {
 	touch tmp
-	grep -r --exclude=tmp "$2" "$1" > tmp || error_exit "Search wasn't complete"
+	grep -r --exclude=tmp "$2" "$1" >/dev/null > tmp
 	cat tmp
 	rm tmp
 }

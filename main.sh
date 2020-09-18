@@ -9,13 +9,10 @@ function error_exit {
 	exit 1
 }
 
-##############################################
-#	CHECK IF ALL THE SCRIPTS ARE AVAILABLE
-##############################################
+#check if all the scripts are available
 if [ ! -e "calc.sh" ] || [ ! -e "strlen.sh" ] || [ ! -e "reverse.sh" ] || [ ! -e "search.sh" ] || [ ! -e "interactive.sh" ] || [ ! -e "log.sh" ]; then
 	echo "WARNING: Some scripts are not available! some functions may not work"
 fi
-
 
 
 
@@ -105,3 +102,4 @@ else
 		error_exit "Command not supported. See help for options"
 	fi
 fi
+

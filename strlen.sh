@@ -1,6 +1,5 @@
 #!/bin/bash
 
-#"string example"
 SCRIPTNAME=$0
 
 function error_exit {

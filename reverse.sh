@@ -1,7 +1,5 @@
 #!/bin/bash
 
-#file file
-
 SCRIPTNAME=$0
 
 function error_exit {

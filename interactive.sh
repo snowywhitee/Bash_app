@@ -37,7 +37,7 @@ function calc {
 			return 0
 		elif ! [[ $num2 =~ $re ]]; then
 			error "You should enter a NUMBER. Try again"
-		elif [[ "$num2" == "0" ]]; then
+		elif [[ "$1" == "div" ]] && (( $num2 == 0 )); then
 			error "Division by zero"
 		else
 			break
@@ -66,7 +66,19 @@ function calc {
 	mainMenu
 }
 
+function searchFunc {
+	touch tmp
+	grep -r --exclude=tmp "$1" "$2" 2>/dev/null > tmp
+	if ! [[ -s "tmp" ]]; then
+		dialog --title ":(" --msgbox "No results, sorry" 10 50
+	else
+		dialog --title "Search results" --textbox tmp 50 60
+	fi
+	rm tmp
+}
+
 function search {
+	#set values
 	while true; do
 		dirname=$(dialog --title "Interactive mode" --inputbox \
 		"Enter the directory name:" 10 50 3>&1 1>&2 2>&3 3>&- )
@@ -85,16 +97,9 @@ function search {
 		mainMenu
 		return 0
 	fi
-	touch tmp
-	grep -r --exclude=tmp "$pattern" "$dirname" > tmp
-	if ! [[ -s "tmp" ]]; then
-		dialog --title ":(" --msgbox "No results, sorry" 10 50
-		rm tmp
-		mainMenu
-		return 0
-	fi
-	dialog --title "Search resuts" --textbox tmp 50 60
-	rm tmp
+
+	searchFunc $pattern $dirname || error "Search failed"
+
 	mainMenu
 }
 
@@ -206,6 +211,23 @@ function getHelp {
 	mainMenu
 }
 
+function exitFunc {
+	while true; do
+		choice=$(dialog --title "Exit" --inputbox \
+		"Enter the code. Must be a number!" 10 50 3>&1 1>&2 2>&3 3>&- )
+		if [ "$?" != "0" ]; then
+			mainMenu
+			return 0
+		elif ! [[ $choice =~ $re ]]; then
+			error "Code must be a number!"
+		else
+			break
+		fi
+	done
+	clear
+	exit $choice
+}
+
 function mainMenu {
 
 choice=$(dialog --title "Main menu"  --menu "Choose the command" 15 30 7\
@@ -244,22 +266,14 @@ elif [ "$choice" = "5" ]; then
 elif [ "$choice" = "6" ]; then
 	getHelp
 elif [ "$choice" = "7" ]; then
-	while true; do
-		option=$(dialog --inputbox \
-		"Enter the code. Must be a number" 10 50 3>&1 1>&2 2>&3 3>&- )
-		if ! [[ $option =~ $re ]]; then
-			error "Code must be a number!"
-		else
-			break
-		fi
-	done
-	clear
-	exit $option
+	exitFunc
 fi
 
 clear
 }
 
+
+#performing starts here
 if [ ! -e "calc.sh" ] || [ ! -e "strlen.sh" ] || [ ! -e "search.sh" ] || [ ! -e "interactive.sh" ] || [ ! -e "reverse.sh" ] || [ ! -e "log.sh" ]; then
 	dialog --title "WARNING" --msgbox "Some scripts are not found. Some functions may not work" 10 50
 fi
