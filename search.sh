@@ -9,7 +9,7 @@ function error_exit {
 
 function search {
 	touch tmp
-	grep -r --exclude=tmp "$2" "$1" >/dev/null > tmp
+	grep -r --exclude=tmp "$2" "$1" 2>/dev/null > tmp
 	cat tmp
 	rm tmp
 }
