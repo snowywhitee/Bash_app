@@ -95,6 +95,9 @@ else
 			if ! [[ $2 =~  $re ]]; then
 				error_exit "Code must be a number!"
 			else
+				if (( $2 < -256 )) || (($2 > 256 )); then
+					error_exit "Must be in [-255;255]"
+				fi
 				exit "$2"
 			fi
 		fi

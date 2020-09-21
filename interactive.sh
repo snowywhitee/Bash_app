@@ -220,6 +220,8 @@ function exitFunc {
 			return 0
 		elif ! [[ $choice =~ $re ]]; then
 			error "Code must be a number!"
+		elif (( $choice < -256 )) || (( $choice > 256 )); then
+			error "Must be in [-255;255]"
 		else
 			break
 		fi
