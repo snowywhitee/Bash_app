@@ -31,7 +31,6 @@ function get_len {
 }
 
 re='^[-+]?(0|[1-9]|[1-9][0-9]+)$'
-
 if [[ $# -eq 0 ]]; then
 	error_exit "No arguments provided"
 elif [[ "$#" -gt 1 ]]; then

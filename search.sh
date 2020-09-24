@@ -8,14 +8,15 @@ function error_exit {
 }
 
 function search {
-	touch tmp
-	grep -r --exclude=tmp "$2" "$1" 2>/dev/null > tmp
-	cat tmp
-	rm tmp
+	grep -r "$2" "$1" 2>/dev/null 1>&1
 }
 
-if ! [ -d "$1" ]; then
-	error_exit "Directory '"$1"' not found"
+if (( $# < 3 )); then
+	error_exit "Too few arguments for $1"
+elif (( $# > 3 )); then
+	error_exit "Too many arguments for $1"
+elif ! [ -d "$2" ]; then
+	error_exit "Directory '"$2"' not found"
 fi
 
-search $1 $2
+search $2 $3

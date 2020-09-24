@@ -67,14 +67,13 @@ function calc {
 }
 
 function searchFunc {
-	touch tmp
-	grep -r --exclude=tmp "$1" "$2" 2>/dev/null > tmp
-	if ! [[ -s "tmp" ]]; then
+	> dialog_output
+	grep -r --exclude=tmp "$1" "$2" 2>/dev/null > dialog_output
+	if ! [[ -s "dialog_output" ]]; then
 		dialog --title ":(" --msgbox "No results, sorry" 10 50
 	else
-		dialog --title "Search results" --textbox tmp 50 60
+		dialog --title "Search results" --textbox dialog_output 50 60
 	fi
-	rm tmp
 }
 
 function search {
@@ -133,7 +132,7 @@ function reverse {
 			dialog --yesno \
 			"File '"$output"' doesn't exist. Create?" 10 50
 			if [ "$?" == "0" ]; then
-				touch "$output"
+				touch "$output" 2>/dev/null || error "Permission denied, try another file/directory"; continue
 				break
 			fi
 		elif ! [[ -w "$output" ]]; then
@@ -148,11 +147,8 @@ function reverse {
 		return 0
 	elif [[ "$input" -ef "$output" ]]; then
 		warning "You are about to reverse file '"$input"' to itself"
-		touch tmp
-		tac "$input" >> tmp
-		> "$input"
-		cat tmp >> "$input"
-		rm tmp
+		sed -i '1!G;h;$!d' "$input"
+		mainMenu
 		return 0
 	elif [[ -s "$output" ]]; then
 		dialog --yesno "File '"$output"' is not empty. Overwrite?" 10 50
@@ -183,20 +179,16 @@ function strlen {
 }
 
 function getLog {
-	if [ "$EUID" -ne 0 ]; then
-		error "Please, run as root"
-		mainMenu
-		exit 0
+	if ! [[ -e "/var/log/anaconda/X.log" ]]; then
+		error "Log file '/var/log/anaconda/X.log' not found"
+	elif ! [[ -r "/var/log/anaconda/X.log" ]]; then
+		error "Log file '/var/log/anaconda/X.log' is not readable"
+	else
+		warnings="$(cat /var/log/anaconda/X.log | sed -e 's/]\ (WW/]\ (Warning/g;/Warning/!d;s/Warning/\\Z3Warning\\Zn/g')"
+		info="$(cat /var/log/anaconda/X.log | sed -e 's/]\ (II/]\ (Information/g;/Information/!d;s/Information/\\Z4Information\\Zn/g')"
+		dialog --title "Click ok to go to info messages" --colors --msgbox "$warnings" 50 60
+		dialog --title "Info messages" --colors --msgbox "$info" 50 60
 	fi
-	touch tmp tmp2
-	cat /var/log/anaconda/X.log >> tmp
-	sed -i 's/WW/Warning/g;s/II/Information/g' tmp
-	cat tmp >> tmp2
-	sed -i '/Information/!d' tmp
-	sed -i '/Warning/!d' tmp2
-	cat tmp >> tmp2
-	dialog --title "Logs" --textbox tmp2 50 60
-	rm tmp tmp2
 	mainMenu
 }
 
@@ -220,8 +212,8 @@ function exitFunc {
 			return 0
 		elif ! [[ $choice =~ $re ]]; then
 			error "Code must be a number!"
-		elif (( $choice < -256 )) || (( $choice > 256 )); then
-			error "Must be in [-255;255]"
+		elif (( $choice < 0 )) || (( $choice > 256 )); then
+			error "Must be in [0;255]"
 		else
 			break
 		fi
@@ -279,5 +271,7 @@ clear
 if [ ! -e "calc.sh" ] || [ ! -e "strlen.sh" ] || [ ! -e "search.sh" ] || [ ! -e "interactive.sh" ] || [ ! -e "reverse.sh" ] || [ ! -e "log.sh" ]; then
 	dialog --title "WARNING" --msgbox "Some scripts are not found. Some functions may not work" 10 50
 fi
+
+> dialog_output
 
 mainMenu

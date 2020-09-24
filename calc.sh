@@ -27,21 +27,21 @@ function calc {
 
 re='^[-+]?(0|[1-9]|[1-9][0-9]+)$'
 
-if (( $# < 3 ));then
-	error_exit "Too few arguments($#). Use this pattern: sum 1 2"
-elif (( $# > 3 )); then
-	error_exit "Too many arguments($#). Use this pattern: sum 1 2"
-elif [[ $1 =~ $re ]]; then
-	error_exit "The operator is missing. Should be sum/sub/mul/div instead of $1"
-elif [ $1 != "sum" ] && [ $1 != "sub" ] && [ $1 != "mul" ] && [ $1 != "div" ]; then
-	error_exit "This operator is not supported($1). Check the spelling"
-elif [[ $2 =~ $re ]] && [[ $3 =~ $re ]]; then
-	if [ "$1" == "div" ] && (( $3 == 0 )); then
+if (( $# < 4 ));then
+	error_exit "Too few arguments for calc. Use this pattern: sum 1 2"
+elif (( $# > 4 )); then
+	error_exit "Too many arguments for calc. Use this pattern: sum 1 2"
+elif [[ $2 =~ $re ]]; then
+	error_exit "The operator is missing. Should be sum/sub/mul/div instead of $2"
+elif [ $2 != "sum" ] && [ $2 != "sub" ] && [ $2 != "mul" ] && [ $2 != "div" ]; then
+	error_exit "This operator is not supported($2). Check the spelling"
+elif [[ $3 =~ $re ]] && [[ $4 =~ $re ]]; then
+	if [ "$2" == "div" ] && (( $4 == 0 )); then
 		error_exit "Division by zero"
 	else
-		calc $1 $2 $3
+		calc $2 $3 $4
 	fi
 else
-	error_exit "Last two arquments must be numbers($2 and $3)"
+	error_exit "Last two arquments must be int numbers"
 fi
 

@@ -9,23 +9,17 @@ function error_exit {
 	exit 1
 }
 
-if [ "$EUID" -ne 0 ]; then
-	error_exit "Please, run as root"
+if ! [[ -e "/var/log/anaconda/X.log" ]]; then
+	error_exit "For some reason /var/log/anaconda/X.log doesn't exist"
+elif ! [[ -r "/var/log/anaconda/X.log" ]]; then
+	error_exit "Log file '/var/log/anaconda/X.log' is not readable"
 fi
 
 #YELLOW [33m
 #BLUE [34m
 
-touch tmp tmp2
+warnings="$(cat /var/log/anaconda/X.log | sed -e 's/]\ (WW/]\ (Warning/g;/Warning/!d;s/Warning/\x1b[33mWarning\x1b[0m/g')"
+echo -e "$warnings"
+info="$(cat /var/log/anaconda/X.log | sed -e 's/]\ (II/]\ (Information/g;/Information/!d;s/Information/\x1b[34mInformation\x1b[0m/g')"
+echo -e "$info"
 
-cat /var/log/anaconda/X.log >> tmp
-
-sed -i 's/]\ (WW/]\ (Warning/g;s/]\ (II/]\ (Information/g' tmp
-cat tmp >> tmp2
-sed -i '/Information/!d' tmp
-sed -i '/Warning/!d' tmp2
-
-cat tmp2 | sed -e "s/Warning/\x1b[33mWarning\x1b[0m/g"
-cat tmp | sed -e "s/Information/\x1b[34mInformation\x1b[0m/g"
-
-rm tmp tmp2

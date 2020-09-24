@@ -20,16 +20,10 @@ if [ $# -eq 0 ]; then
 	error_exit "No arguments provided. See help for options"
 else
 	if [[ $1 == "calc" ]]; then
-		if (( $# > 4)); then
-			error_exit "Too many arguments for $1"
-		elif (( $# <4 )); then
-			error_exit "Too few arguments for $1"
+		if [[ -e "calc.sh" ]]; then
+			sh calc.sh $@
 		else
-			if [[ -e "calc.sh" ]]; then
-				sh calc.sh $2 $3 $4 || error_exit "Couldn't open calc.sh"
-			else
-				error_exit "Script 'calc.sh' not found"
-			fi
+			error_exit "Script calc.sh not found"
 		fi
 	elif [[ $1 == "strlen" ]]; then
 		if (( "$#" > 2 )); then
@@ -38,7 +32,7 @@ else
 			error_exit "Too few arguments for $1"
 		else
 			if [[ -e "strlen.sh" ]]; then
-				sh strlen.sh "$2" || error_exit "Couldn't open strlen.sh"
+				sh strlen.sh "$2"
 			else
 				error_exit "Script 'strlen.sh' not found"
 			fi
@@ -50,38 +44,26 @@ else
 			error_exit "File 'help.txt' not found"
 		fi
 	elif [[ $1 == "reverse" ]]; then
-		if (( $# < 3 )); then
-			error_exit "Too few arguments for $1"
-		elif (( $# > 3 )); then
-			error_exit "Too many arguments for $1"
+		if [[ -e "reverse.sh" ]]; then
+			sh reverse.sh $@
 		else
-			if [[ -e "reverse.sh" ]]; then
-				sh reverse.sh $2 $3 || error_exit "Couldn't open reverse.sh"
-			else
-				error_exit "Script reverse.sh not found"
-			fi
+			error_exit "Script reverse.sh not found"
 		fi
 	elif [[ $1 == "search" ]]; then
-		if (( $# < 3 )); then
-			error_exit "Too few arguments for $1"
-		elif (( $# > 3 )); then
-			error_exit "Too many arguments for $1"
+		if [[ -e "search.sh" ]]; then
+			sh search.sh $@
 		else
-			if [[ -e "search.sh" ]]; then
-				sh search.sh $2 $3 || error_exit "Couldn't open search.sh"
-			else
-				"Script search.sh not found"
-			fi
+			"Script search.sh not found"
 		fi
 	elif [[ $1 == "log" ]]; then
 		if [[ -e "log.sh" ]]; then
-			sh log.sh || error_exit "Couldn't open log.sh"
+			sh log.sh
 		else
 			error_exit "Script 'log.sh' not found"
 		fi
 	elif [[ $1 == "interactive" ]]; then
 		if [[ -e "interactive.sh" ]]; then
-			sh interactive.sh  || error_exit "Couldn't open interactive.sh"
+			sh interactive.sh
 		else
 			error_exit "Script 'interactive.sh' not found"
 		fi
@@ -95,8 +77,8 @@ else
 			if ! [[ $2 =~  $re ]]; then
 				error_exit "Code must be a number!"
 			else
-				if (( $2 < -256 )) || (($2 > 256 )); then
-					error_exit "Must be in [-255;255]"
+				if (( $2 < 0 )) || (($2 > 256 )); then
+					error_exit "Must be in [0;255]"
 				fi
 				exit "$2"
 			fi

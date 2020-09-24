@@ -24,50 +24,51 @@ function reverse {
 	tac "$1" >> "$2" || error_exit "Reverse was not complete"
 }
 
+#arguments
+if (( $# < 3 )); then
+	error_exit "Too few arguments for $1"
+elif (( $# > 3 )); then
+	error_exit "Too many arguments for $1"
+fi
 
 #critical errors
-if ! [[ -e "$1" ]]; then
+if ! [[ -e "$2" ]]; then
 	error_exit "File '"$1"' not found"
-elif ! [[ -r "$1" ]]; then
+elif ! [[ -r "$2" ]]; then
 	error_exit "File '"$1"' is not readable"
-elif ! [[ -e "$2" ]]; then
-	read -r -p "File '"$2"' not found. Create '"$2"'? [y/N]  " choice
+elif ! [[ -e "$3" ]]; then
+	read -r -p "File '"$3"' not found. Create '"$3"'? [y/N]  " choice
 	case "$choice" in
 		[yY][eE][sS]|[yY])
-			touch "$2"
+			touch "$3" 2>/dev/null || error_exit "Permission to create '"$2"' denied"
 			;;
 		*)
 			exit 1
 			;;
 	esac
-elif ! [[ -w "$2" ]]; then
-	error_exit "File '"$2"' is not writable"
+elif ! [[ -w "$3" ]]; then
+	error_exit "File '"$3"' is not writable"
 fi
 
 #warnings
-if ! [[ -s "$1" ]]; then
-	warning "File '"$1"' is empty, no changes to '"$2"' will be made"
+if ! [[ -s "$2" ]]; then
+	warning "File '"$2"' is empty, no changes to '"$2"' will be made"
 	#do nothing c:
-elif [[ "$1" -ef "$2" ]]; then
-	warning "You are about to reverse file '"$1"' to itself"
-	touch tmp
-	tac "$1" >> tmp
-	> "$1"
-	cat tmp >> "$1"
-	rm tmp
-elif [[ -s "$2" ]]; then
-	warning "File '"$2"' is not empty"
-	read -r -p "File '"$2"' is not empty. Overwrite? [y/N] " choice
+elif [[ "$2" -ef "$3" ]]; then
+	warning "You are about to reverse file '"$2"' to itself"
+	sed -i '1!G;h;$!d' "$2"
+elif [[ -s "$3" ]]; then
+	read -r -p "File '"$3"' is not empty, o-Overwrite, a-append [o/a] " choice
 	case "$choice" in
-		[yY][eE][sS]|[yY])
-			> "$2"
-			reverse $1 $2
+		[oO])
+			> "$3"
+			reverse $2 $3
 			;;
 		*)
-			reverse $1 $2
+			reverse $2 $3
 			;;
 	esac
 else
-	reverse $1 $2
+	reverse $2 $3
 fi
 
