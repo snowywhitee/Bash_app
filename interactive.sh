@@ -108,7 +108,7 @@ function rev {
 
 function reverse {
 	while true; do
-		input=$(dialog --title "Ineractive mode" --inputbox \
+		input=$(dialog --title "Interactive mode" --inputbox \
 		"Enter the name of the file:" 10 50 3>&1 1>&2 2>&3 3>&- )
 		if [ "$?" != "0" ]; then
 			mainMenu
@@ -271,7 +271,5 @@ clear
 if [ ! -e "calc.sh" ] || [ ! -e "strlen.sh" ] || [ ! -e "search.sh" ] || [ ! -e "interactive.sh" ] || [ ! -e "reverse.sh" ] || [ ! -e "log.sh" ]; then
 	dialog --title "WARNING" --msgbox "Some scripts are not found. Some functions may not work" 10 50
 fi
-
-> dialog_output
 
 mainMenu

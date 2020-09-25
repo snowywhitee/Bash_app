@@ -40,7 +40,7 @@ elif ! [[ -e "$3" ]]; then
 	read -r -p "File '"$3"' not found. Create '"$3"'? [y/N]  " choice
 	case "$choice" in
 		[yY][eE][sS]|[yY])
-			touch "$3" 2>/dev/null || error_exit "Permission to create '"$2"' denied"
+			touch "$3" 2>/dev/null || error_exit "Permission to create '"$3"' denied"
 			;;
 		*)
 			exit 1
